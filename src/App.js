@@ -4,48 +4,55 @@ import { getData, deleteData, postData, putData } from "./api";
 import Form from "./Form";
 
 function App() {
-  const [products, setProducts] = useState([]);
+  const [invoices, setInvoices] = useState([]);
+
   const [openForm, setOpenForm] = useState(false);
   const [edit, setEdit] = useState(false);
   const [search, setSearch] = useState("");
   const [initialForm, setForm] = useState({
-    name: "",
-    price: "",
-    category: ""
+    id: "",
+    date: "",
+    customer: "",
+    payableAmount: "",
+    paidAmount: "",
+    due: ""
   });
 
   useEffect(() => {
-    getProducts();
+    getInvoices();
   }, []);
 
-  const getProducts = async () => {
+  const getInvoices = async () => {
     let res = await getData();
-    setProducts(res.data);
+    setInvoices(res.data);
   };
 
-  const deleteProduct = async (id) => {
+  const deleteInvoice = async (id) => {
     await deleteData(id);
-    getProducts();
+    getInvoices();
   };
 
-  const addProduct = async (product) => {
+  const addInvoice = async (invoice) => {
     let data = {
-      name: product.name,
-      price: product.price,
-      category: product.category
+      id: invoice.id,
+      date: invoice.date,
+      customer: invoice.customer,
+      payableAmount: invoice.payableAmount,
+      paidAmount: invoice.paidAmount,
+      due: invoice.due
     };
 
     if (edit) {
-      await putData(product.id, data);
+      await putData(invoice.id, data);
       setEdit(false);
     } else {
       await postData(data);
     }
-    getProducts();
+    getInvoices();
     setOpenForm(false);
   };
 
-  const editProduct = (data) => {
+  const editInvoice = (data) => {
     setForm(data);
     setEdit(true);
     setOpenForm(true);
@@ -54,33 +61,42 @@ function App() {
   const showForm = () => {
     setOpenForm(true);
     setEdit(false);
-    setForm({ name: "", price: "", category: "" });
+    setForm({
+      id: "",
+      date: "",
+      customer: "",
+      payableAmount: "",
+      paidAmount: "",
+      due: ""
+    });
   };
 
   const closeForm = () => {
     setOpenForm(false);
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase()) ||
-    product.category.toLowerCase().includes(search.toLowerCase())
+  const filteredInvoices = invoices.filter((invoice) =>
+    invoice.customer.toLowerCase().includes(search.toLowerCase()) ||
+    invoice.id.toString().toLowerCase().includes(search.toLowerCase())
   );
+  
 
   return (
     <div className="wrapper m-5 w-50">
-      <h2 className="text-primary">CRUD Operations</h2>
+      <h2 className="text-primary">Invoice Management</h2>
       <button className="btn btn-primary mb-3" onClick={showForm}>
-        Add Product
+        Add Invoice
       </button>
       <input
         type="text"
         className="form-control mb-3"
-        placeholder="Search products..."
+        placeholder="Search invoices..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <Table products={filteredProducts} delete={deleteProduct} edit={editProduct} />
-      {openForm && <Form closeForm={closeForm} data={initialForm} add={addProduct} />}
+      <Table invoices={filteredInvoices} deleteInvoice={deleteInvoice} editInvoice={editInvoice} />
+
+      {openForm && <Form closeForm={closeForm} data={initialForm} add={addInvoice} />}
     </div>
   );
 }

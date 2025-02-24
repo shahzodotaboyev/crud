@@ -1,66 +1,93 @@
 import React, { useState, useEffect } from 'react';
 
 const Form = (props) => {
-  const [products, setProducts] = useState(props.data);
+  const [invoice, setInvoice] = useState(props.data);
 
   useEffect(() => {
-    setProducts(props.data);  
+    setInvoice(props.data);  
   }, [props.data]);
 
   let changeFormData = (event) => {
     const { name, value } = event.target;
-    setProducts({ ...products, [name]: value });
+    setInvoice({ ...invoice, [name]: value });
   };
 
   return (
     <div className="form-overlay">
       <form>
         <div className="form-group">
-          <label>Name:</label>
+          <label>Invoice ID:</label>
           <input
             className="form-control mt-2"
-            value={products.name}
+            value={invoice.id}
             type="text"
-            name="name"
+            name="id"
             onChange={changeFormData}
-            placeholder="Enter Name"
+            placeholder="Enter Invoice ID"
           />
         </div>
         <div className="form-group">
-          <label>Price:</label>
+          <label>Date:</label>
+          <input
+            className="form-control mt-2"
+            type="date"
+            value={invoice.date}
+            onChange={changeFormData}
+            name="date"
+          />
+        </div>
+        <div className="form-group">
+          <label>Customer:</label>
+          <input
+            className="form-control mt-2"
+            type="text"
+            value={invoice.customer}
+            onChange={changeFormData}
+            name="customer"
+            placeholder="Enter Customer Name"
+          />
+        </div>
+        <div className="form-group">
+          <label>Payable Amount:</label>
           <input
             className="form-control mt-2"
             type="number"
-            value={products.price}
+            value={invoice.payableAmount}
             onChange={changeFormData}
-            name="price"
-            placeholder="Enter Price"
+            name="payableAmount"
+            placeholder="Enter Payable Amount"
           />
         </div>
         <div className="form-group">
-          <label>Category:</label>
-          <select
+          <label>Paid Amount:</label>
+          <input
             className="form-control mt-2"
-            value={products.category || ""}
+            type="number"
+            value={invoice.paidAmount}
             onChange={changeFormData}
-            name="category"
-          >
-            <option value="">Select Category</option>
-            <option value="mobiles">Mobiles</option>
-            <option value="laptop">Laptop</option>
-            <option value="gaming">Gaming</option>
-            <option value="wearable">Wearable</option>
-            <option value="audio">Audio</option>
-          </select>
+            name="paidAmount"
+            placeholder="Enter Paid Amount"
+          />
+        </div>
+        <div className="form-group">
+          <label>Due:</label>
+          <input
+            className="form-control mt-2"
+            type="number"
+            value={invoice.due}
+            onChange={changeFormData}
+            name="due"
+            placeholder="Enter Due Amount"
+          />
         </div>
         <button
           className="btn btn-primary float-end"
           onClick={(e) => {
             e.preventDefault();
-            props.add(products);
+            props.add(invoice);
           }}
         >
-          Send
+          Save
         </button>
         <button
           className="btn btn-danger float-end"
